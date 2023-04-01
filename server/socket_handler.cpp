@@ -4,10 +4,31 @@
 
 Socket_Handler::Socket_Handler()
 {
-    initWSA();
-    initLog();
-    initAddr();
-    initAndBindSocket();
+    SOCK_STATUS status = SOCK_GENERAL_FAIL;
+    status = initWSA();
+    if(status != SOCK_SUCCESS) throw std::runtime_error("Failed to init WSA");
+
+    status = initLog();
+    if(status != SOCK_SUCCESS) 
+    {
+        WSACleanup(); 
+        throw std::runtime_error("Failed to init log.");
+    }
+
+    status = initAddr();
+    if(status != SOCK_SUCCESS)
+    {
+        WSACleanup();
+        throw std::runtime_error("Failed to init log.");
+    }
+
+    status = initAndBindSocket();
+    if(status != SOCK_SUCCESS)
+    {
+        WSACleanup();
+        freeaddrinfo(address);
+        throw std::runtime_error("Failed to init log.");
+    }
 }
 
 inline void Socket_Handler::log(std::string type, std::string message)
@@ -20,44 +41,46 @@ Socket_Handler::~Socket_Handler()
     log(LOG_INFO, "Cleaning up.");
     WSACleanup();
     freeaddrinfo(address);
-    logFile.close();
     closesocket(socketHandle);
 }
 
-void Socket_Handler::sockListen()
+SOCK_STATUS Socket_Handler::sockListen()
 {
-    int status = STATUS_FAIL;
+    int status;
     status = listen(socketHandle, SOMAXCONN);
 
     if(status == SOCKET_ERROR)
     {
         log(LOG_ERROR, "Failed to listen to socket.");
-        throw std::runtime_error("Error: Could not create socket.");
+        return SOCK_GENERAL_FAIL;
     }
+    return SOCK_SUCCESS;
 }
 
-void Socket_Handler::initWSA()
+SOCK_STATUS Socket_Handler::initWSA()
 {
     int status = WSAStartup(MAKEWORD(2,2), &wsaData);
     if(status)
     {
         log(LOG_ERROR, "Failed to startup WSA.");
-        throw std::runtime_error("Error: Could not startup WSA.");
+        return SOCK_GENERAL_FAIL;
     }
+    return SOCK_SUCCESS;
 }
 
-void Socket_Handler::initLog()
+SOCK_STATUS Socket_Handler::initLog()
 {
     logFile.open(".\\server_out.log", std::ofstream::out | std::ofstream::trunc);
     if(!logFile.is_open())
     {
         std::cout << "Failed to create log file." << std::endl;
-        throw std::runtime_error("Error: Could not create log file.");
+        return SOCK_GENERAL_FAIL;
     }
     log(LOG_INFO, "Created log file.");
+    return SOCK_SUCCESS;
 }
 
-void Socket_Handler::initAddr()
+SOCK_STATUS Socket_Handler::initAddr()
 {
     ZeroMemory(&hints, sizeof(hints));
     hints.ai_family = AF_INET;
@@ -70,19 +93,20 @@ void Socket_Handler::initAddr()
     {
         log(LOG_ERROR, "Failed to get address info.");
         log(LOG_ERROR, std::to_string(status));
-        throw std::runtime_error("Error: Could not get address info.");
+        return SOCK_GENERAL_FAIL;
     }
     log(LOG_INFO, "Got address info.");
+    return SOCK_SUCCESS;
 }
 
-void Socket_Handler::initAndBindSocket()
+SOCK_STATUS Socket_Handler::initAndBindSocket()
 {
     socketHandle = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
 
     if(socketHandle == INVALID_SOCKET)
     {
         log(LOG_ERROR, "Failed to create socket.");
-        throw std::runtime_error("Error: Could not create socket.");
+        return SOCK_GENERAL_FAIL;
     }
     log(LOG_INFO, "Created socket.");
 
@@ -91,54 +115,70 @@ void Socket_Handler::initAndBindSocket()
     if(status == SOCKET_ERROR)
     {
         log(LOG_ERROR, "Failed to bind socket.");
-        throw std::runtime_error("Error: Could not bind socket.");
+        return SOCK_GENERAL_FAIL;
     }
     log(LOG_INFO, "Binded socket.");
+    return SOCK_SUCCESS;
 }
 
-void Socket_Handler::sockAccept()
+SOCK_STATUS Socket_Handler::sockAccept()
 {
     clientHandle = accept(socketHandle, NULL, NULL);
 
     if(clientHandle == INVALID_SOCKET)
     {
         log(LOG_ERROR, "Failed to accept connection.");
-        throw std::runtime_error("Error: Could not accept connection.");
+        return SOCK_GENERAL_FAIL;
     }
     log(LOG_INFO, "Accepted connection from client.");
+    return SOCK_SUCCESS;
 }
 
-void Socket_Handler::echo()
+SOCK_STATUS Socket_Handler::echo()
 {
-    int status;
+    SOCK_STATUS status = SOCK_GENERAL_FAIL;
     int numBytesReceived = 0;
     char receiveBuffer[BUFFER_LEN];
     
-    do
+    while(true)
     {
-        status = recv(clientHandle, receiveBuffer, BUFFER_LEN, 0);
+        status = sockReceive(receiveBuffer, numBytesReceived);
+        if(status != SOCK_SUCCESS) break;
 
-        if(!status)
-        {
-            log(LOG_WARNING, "Connection closed.");
-            break;
-        }
+        status = sockSend(receiveBuffer, numBytesReceived);
+        if(status != SOCK_SUCCESS) break;
+    }
+    return status;
+}
 
-        if(status < 0)
-        {
-            log(LOG_ERROR, "Failed to receive.");
-            break;
-        }
+SOCK_STATUS Socket_Handler::sockReceive(char * buffer, int &size)
+{
+    size = recv(clientHandle, buffer, BUFFER_LEN, 0);
 
-        log(LOG_INFO, "Received bytes.");
-        numBytesReceived = status;
+    if(size == 0)
+    {
+        log(LOG_WARNING, "Connection closed.");
+        return SOCK_CONNECTION_CLOSED;
+    }
 
-        status = send(clientHandle, receiveBuffer, numBytesReceived, 0);
-        if(status == SOCKET_ERROR)
-        {
-            log(LOG_ERROR, "Failed to send.");
-            break;
-        }
-    } 
-    while(1);
+    if(size < 0)
+    {
+        log(LOG_ERROR, "Failed to receive.");
+        return SOCK_GENERAL_FAIL;
+    }
+
+    log(LOG_INFO, "Received bytes.");
+    return SOCK_SUCCESS;
+}
+
+SOCK_STATUS Socket_Handler::sockSend(char * buffer, int &size)
+{
+    int status = send(clientHandle, buffer, size, 0);
+    if(status == SOCKET_ERROR)
+    {
+        log(LOG_ERROR, "Failed to send.");
+        return SOCK_GENERAL_FAIL;
+    }
+    log(LOG_INFO, "Sent bytes.");
+    return SOCK_SUCCESS;
 }

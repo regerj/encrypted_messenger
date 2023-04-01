@@ -16,7 +16,6 @@
 #define LOG_INFO "INFO"
 #define LOG_WARNING "WARNING"
 #define DEFUALT_PORT "27015"
-#define STATUS_FAIL -1
 #define BUFFER_LEN 1024
 
 // Forward declarations becuase windows is a piece of shit sometimes
@@ -34,6 +33,13 @@ extern "C" {
 }
 #endif
 
+enum SOCK_STATUS
+{
+    SOCK_SUCCESS = 0,
+    SOCK_GENERAL_FAIL = 1,
+    SOCK_CONNECTION_CLOSED = 2
+};
+
 class Socket_Handler
 {
     private:
@@ -46,15 +52,17 @@ class Socket_Handler
         SOCKET clientHandle = INVALID_SOCKET;
 
         inline void log(std::string, std::string);
-        void initWSA();
-        void initLog();
-        void initAddr();
-        void initAndBindSocket();
+        SOCK_STATUS initWSA();
+        SOCK_STATUS initLog();
+        SOCK_STATUS initAddr();
+        SOCK_STATUS initAndBindSocket();
+        SOCK_STATUS sockReceive(char *, int &);
+        SOCK_STATUS sockSend(char *, int &);
     protected:
     public:
         Socket_Handler();
         ~Socket_Handler();
-        void sockListen();
-        void sockAccept();
-        void echo();
+        SOCK_STATUS sockListen();
+        SOCK_STATUS sockAccept();
+        SOCK_STATUS echo();
 };
