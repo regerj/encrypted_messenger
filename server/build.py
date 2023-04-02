@@ -25,6 +25,7 @@ def main():
 def build():
     os.mkdir(".\\bin")
     compile("socket_handler", True)
+    compile("server_socket", True)
     compile("main", True)
     compile("", False)
 

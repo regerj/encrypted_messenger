@@ -37,32 +37,27 @@ enum SOCK_STATUS
 {
     SOCK_SUCCESS = 0,
     SOCK_GENERAL_FAIL = 1,
-    SOCK_CONNECTION_CLOSED = 2
+    SOCK_CONNECTION_CLOSED = 2,
+    SOCK_NOT_IMPLEMENTED = 3
 };
 
 class Socket_Handler
 {
     private:
+    protected:
         SOCKET socketHandle = INVALID_SOCKET;
         struct addrinfo * address = NULL;
         struct addrinfo * ptr = NULL;
-        struct addrinfo hints;
         std::ofstream logFile;
         WSADATA wsaData;
-        SOCKET clientHandle = INVALID_SOCKET;
 
-        inline void log(std::string, std::string);
+        inline void log(std::string type, std::string message) { logFile << type << ": " << message << std::endl;}
         SOCK_STATUS initWSA();
         SOCK_STATUS initLog();
-        SOCK_STATUS initAddr();
-        SOCK_STATUS initAndBindSocket();
-        SOCK_STATUS sockReceive(char *, int &);
-        SOCK_STATUS sockSend(char *, int &);
-    protected:
+        virtual SOCK_STATUS sockReceive(char *, int &);
+        virtual SOCK_STATUS sockSend(char *, int &);
+        virtual SOCK_STATUS initAddr();
     public:
         Socket_Handler();
         ~Socket_Handler();
-        SOCK_STATUS sockListen();
-        SOCK_STATUS sockAccept();
-        SOCK_STATUS echo();
 };
