@@ -7,7 +7,7 @@ Server_Socket::Server_Socket()
     if(status != SOCK_SUCCESS)
     {
         WSACleanup();
-        throw std::runtime_error("Failed to init log.");
+        throw std::runtime_error("Failed to init address.");
     }
 
     status = initAndBindSocket();
@@ -15,7 +15,7 @@ Server_Socket::Server_Socket()
     {
         WSACleanup();
         freeaddrinfo(address);
-        throw std::runtime_error("Failed to init log.");
+        throw std::runtime_error("Failed to init and bind to socket.");
     }
 }
 
@@ -40,6 +40,8 @@ SOCK_STATUS Server_Socket::initAndBindSocket()
     if(status == SOCKET_ERROR)
     {
         log(LOG_ERROR, "Failed to bind socket.");
+        closesocket(socketHandle);
+        socketHandle = INVALID_SOCKET;
         return SOCK_GENERAL_FAIL;
     }
     log(LOG_INFO, "Binded socket.");

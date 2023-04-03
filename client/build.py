@@ -3,7 +3,7 @@
 import sys, os
 
 file_list = ""
-exe_name = "server.exe"
+exe_name = "client.exe"
 
 def main():
     try:
@@ -25,7 +25,7 @@ def main():
 def build():
     os.mkdir(".\\bin")
     # compile("socket_handler", True)
-    compile("server_socket", True)
+    compile("client_socket", True)
     compile("main", True)
     compile("", False)
 
@@ -35,11 +35,11 @@ def compile(cpp_file, component):
 
     if component:
         os.system("echo Compiling " + cpp_file)
-        os.system("g++ -std=c++11 -c -g " + cpp_file + ".cpp" + " -o " + ".\\bin\\" + cpp_file + ".o")
+        os.system("g++ -std=c++11 -c -static " + cpp_file + ".cpp" + " -o " + ".\\bin\\" + cpp_file + ".o")
         file_list += (".\\bin\\" + cpp_file + ".o ")
     else:
         #print(file_list)
-        os.system("g++ -std=c++11 -g " + file_list + "-o " + ".\\bin\\" + exe_name + " -L .\\lib -lsocket_handler" + " -lws2_32")
+        os.system("g++ -std=c++11 -static " + file_list + "-o " + ".\\bin\\" + exe_name + " -L .\\lib -lsocket_handler" + " -lws2_32")
 
 def run():
     os.system(".\\bin\\" + exe_name)

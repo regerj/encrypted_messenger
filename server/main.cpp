@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include "socket_handler.hpp"
 #include "server_socket.hpp"
 
 int main()
@@ -11,5 +10,6 @@ int main()
     socket.sockListen();
     socket.sockAccept();
     socket.echo();
+    std::cout << "Post echo" << std::endl;
     return 0;
 }

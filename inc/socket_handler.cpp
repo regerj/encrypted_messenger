@@ -47,12 +47,12 @@ SOCK_STATUS Socket_Handler::initLog()
     return SOCK_SUCCESS;
 }
 
-SOCK_STATUS Socket_Handler::sockReceive(char * buffer, int &size)
+SOCK_STATUS Socket_Handler::sockReceive(std::string &buffer, int &size)
 {
     return SOCK_NOT_IMPLEMENTED;
 }
 
-SOCK_STATUS Socket_Handler::sockSend(char * buffer, int &size)
+SOCK_STATUS Socket_Handler::sockSend(std::string buffer, int &size)
 {
     return SOCK_NOT_IMPLEMENTED;
 }

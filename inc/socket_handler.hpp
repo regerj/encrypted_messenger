@@ -50,12 +50,13 @@ class Socket_Handler
         struct addrinfo * ptr = NULL;
         std::ofstream logFile;
         WSADATA wsaData;
+        struct addrinfo hints;
 
         inline void log(std::string type, std::string message) { logFile << type << ": " << message << std::endl;}
         SOCK_STATUS initWSA();
         SOCK_STATUS initLog();
-        virtual SOCK_STATUS sockReceive(char *, int &);
-        virtual SOCK_STATUS sockSend(char *, int &);
+        virtual SOCK_STATUS sockReceive(std::string &, int &);
+        virtual SOCK_STATUS sockSend(std::string, int &);
         virtual SOCK_STATUS initAddr();
     public:
         Socket_Handler();
