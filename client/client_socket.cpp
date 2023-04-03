@@ -114,22 +114,26 @@ SOCK_STATUS Client_Socket::sockShutdown(int type)
 
 SOCK_STATUS Client_Socket::tempComms()
 {
-    std::string sendBuff;
-    std::string recBuff;
-    // char sendBuff[BUFFER_LEN];
-    // char recBuff[BUFFER_LEN];
-    int recLen = BUFFER_LEN;
-    int sendLen = BUFFER_LEN;
     SOCK_STATUS status = SOCK_GENERAL_FAIL;
+    while(true)
+    {
+        std::string sendBuff;
+        std::string recBuff;
+        // char sendBuff[BUFFER_LEN];
+        // char recBuff[BUFFER_LEN];
+        int recLen = BUFFER_LEN;
+        int sendLen = BUFFER_LEN;
 
-    std::cout << "Enter your message here: ";
-    getline(std::cin, sendBuff);
-    sendLen = sendBuff.length();
+        std::cout << "Enter your message here: ";
+        getline(std::cin, sendBuff);
+        sendLen = sendBuff.length();
 
-    status = sockSend(sendBuff, sendLen);
-    if(status != SOCK_SUCCESS) return status;
+        status = sockSend(sendBuff, sendLen);
+        if(status != SOCK_SUCCESS) return status;
 
-    status = sockReceive(recBuff, recLen);
-    std::cout << "Jacob: " << recBuff << std::endl;
+        status = sockReceive(recBuff, recLen);
+        if(status != SOCK_SUCCESS) return status;
+        std::cout << "Jacob: " << recBuff << std::endl;
+    }
     return status;
 }
