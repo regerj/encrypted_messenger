@@ -4,3 +4,7 @@ bin/
 client/lib/
 *.o
 *.a
+docs/latex/
+docs/html/
+client/docs/
+server/docs/

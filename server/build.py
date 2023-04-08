@@ -40,7 +40,11 @@ def compile(cpp_file, component):
     else:
         #print(file_list)
         os.system("g++ -std=c++11 -g " + file_list + "-o " + ".\\bin\\" + exe_name + " -L .\\lib -lsocket_handler" + " -lws2_32")
-
+        os.system("doxygen ..\\docs\lovelace.doxygen")
+        os.chdir("..\\docs\\latex")
+        os.system(".\\make")
+        os.chdir("..\\..\\server\\")
+        
 def run():
     os.system(".\\bin\\" + exe_name)
 
