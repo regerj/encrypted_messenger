@@ -14,7 +14,6 @@
 #include "lib\socket_handler.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
-//! \class Client_Socket 
 //! \brief A class for interacting with the client's socket connection to the
 //! server.
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +21,6 @@ class Client_Socket: public Socket_Handler
 {
     private:
         ////////////////////////////////////////////////////////////////////////////////
-        //! \fn SOCK_STATUS sockReceive(std::string &buffer, int &size)
         //! \brief This function wraps the raw recv socket function for easier error
         //! handling and use with C++ style strings, abstracting away the C strings.
         //! 
@@ -34,7 +32,6 @@ class Client_Socket: public Socket_Handler
         SOCK_STATUS sockReceive(std::string &buffer, int &size);
 
         ////////////////////////////////////////////////////////////////////////////////
-        //! \fn SOCK_STATUS sockSend(std::string buffer, int &size)
         //! \brief This function wraps the raw send socket function for easier error
         //! handling and use with C++ style strings, abstracting away the C Strings.
         //! 
@@ -45,7 +42,6 @@ class Client_Socket: public Socket_Handler
         SOCK_STATUS sockSend(std::string buffer, int &size);
 
         ////////////////////////////////////////////////////////////////////////////////
-        //! \fn SOCK_STATUS initAddr()
         //! \brief This function encapsulates the address aquisition and error handling
         //! for socket communication.
         //! 
@@ -54,7 +50,6 @@ class Client_Socket: public Socket_Handler
         SOCK_STATUS initAddr();
 
         ////////////////////////////////////////////////////////////////////////////////
-        //! \fn SOCK_STATUS initAndConnectSocket()
         //! \brief This function initializes and connects the socket. This must be
         //! called only after previous setup has been completed.
         //! 
@@ -64,21 +59,18 @@ class Client_Socket: public Socket_Handler
     protected:
     public:
         ////////////////////////////////////////////////////////////////////////////////
-        //! \fn Client_Socket()
         //! \brief Construct a new Client_Socket object.
         //! 
         ////////////////////////////////////////////////////////////////////////////////
         Client_Socket();
 
         ////////////////////////////////////////////////////////////////////////////////
-        //! \fn ~Client_Socket()
         //! \brief Destroy the Client_Socket object.
         //! 
         ////////////////////////////////////////////////////////////////////////////////
         ~Client_Socket();
 
         ////////////////////////////////////////////////////////////////////////////////
-        //! \fn SOCK_STATUS sockSutdown(int type)
         //! \brief This function shuts down the client's socket connection to the
         //! server.
         //! 
@@ -89,7 +81,6 @@ class Client_Socket: public Socket_Handler
         SOCK_STATUS sockShutdown(int type);
 
         ////////////////////////////////////////////////////////////////////////////////
-        //! \fn SOCK_STATUS tempComms()
         //! \brief This function is a temporary implementation of talking back and forth
         //! with server for testing purposes. Will likely be deprecated and removed.
         //! 

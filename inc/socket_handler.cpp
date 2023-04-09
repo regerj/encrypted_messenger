@@ -37,7 +37,7 @@ SOCK_STATUS Socket_Handler::initWSA()
 
 SOCK_STATUS Socket_Handler::initLog()
 {
-    logFile.open(".\\server_out.log", std::ofstream::out | std::ofstream::trunc);
+    logFile.open(".\\lovelace_out.log", std::ofstream::out | std::ofstream::trunc);
     if(!logFile.is_open())
     {
         std::cout << "Failed to create log file." << std::endl;
