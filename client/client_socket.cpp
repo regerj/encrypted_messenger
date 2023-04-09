@@ -66,8 +66,9 @@ SOCK_STATUS Client_Socket::initAndConnectSocket()
     return SOCK_SUCCESS;
 }
 
-SOCK_STATUS Client_Socket::sockReceive(std::string &buffer, int &size)
+SOCK_STATUS Client_Socket::sockReceive(std::string &buffer)
 {
+    int size = 0;
     char cStringBuffer[BUFFER_LEN];
     size = recv(socketHandle, cStringBuffer, BUFFER_LEN, 0);
 
@@ -87,10 +88,10 @@ SOCK_STATUS Client_Socket::sockReceive(std::string &buffer, int &size)
     log(LOG_INFO, "Received bytes.");
     return SOCK_SUCCESS;
 }
-SOCK_STATUS Client_Socket::sockSend(std::string buffer, int & size)
+SOCK_STATUS Client_Socket::sockSend(std::string buffer)
 {
     const char * cStringBuffer = buffer.c_str();
-    int status = send(socketHandle, cStringBuffer, size, 0);
+    int status = send(socketHandle, cStringBuffer, buffer.length(), 0);
     if(status == SOCKET_ERROR)
     {
         log(LOG_ERROR, "Failed to send.");
@@ -115,23 +116,22 @@ SOCK_STATUS Client_Socket::sockShutdown(int type)
 SOCK_STATUS Client_Socket::tempComms()
 {
     SOCK_STATUS status = SOCK_GENERAL_FAIL;
+    // HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    // CONSOLE_SCREEN_BUFFER_INFO prevConsoleBufferInfo, newConsoleBufferInfo;
+    // GetConsoleScreenBufferInfo(consoleHandle, &prevConsoleBufferInfo);
+
     while(true)
     {
         std::string sendBuff;
         std::string recBuff;
-        // char sendBuff[BUFFER_LEN];
-        // char recBuff[BUFFER_LEN];
-        int recLen = BUFFER_LEN;
-        int sendLen = BUFFER_LEN;
 
-        std::cout << "Enter your message here: ";
+        std::cout << "You: ";
         getline(std::cin, sendBuff);
-        sendLen = sendBuff.length();
 
-        status = sockSend(sendBuff, sendLen);
+        status = sockSend(sendBuff);
         if(status != SOCK_SUCCESS) return status;
 
-        status = sockReceive(recBuff, recLen);
+        status = sockReceive(recBuff);
         if(status != SOCK_SUCCESS) return status;
         std::cout << "Jacob: " << recBuff << std::endl;
     }

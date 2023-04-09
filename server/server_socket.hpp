@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "..\inc\socket_handler.hpp"
+#include "lib\socket_handler.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 //! \brief A class for interacting with the server's socket connection that it
@@ -48,7 +48,7 @@ class Server_Socket: public Socket_Handler
         //! \param size Size of the message, deprecated and will be removed.
         //! \return SOCK_STATUS representing if the operation succeeded or failed.
         ////////////////////////////////////////////////////////////////////////////////
-        SOCK_STATUS sockReceive(std::string &buffer, int &size);
+        SOCK_STATUS sockReceive(std::string &buffer);
 
         ////////////////////////////////////////////////////////////////////////////////
         //! \brief This function wraps the raw send socket function for easier error
@@ -58,7 +58,7 @@ class Server_Socket: public Socket_Handler
         //! \param size The size of the buffer, will be removed later.
         //! \return SOCK_STATUS representing if the operation succeeded or failed.
         ////////////////////////////////////////////////////////////////////////////////
-        SOCK_STATUS sockSend(std::string buffer, int &size);
+        SOCK_STATUS sockSend(std::string buffer);
     protected:
     public:
         ////////////////////////////////////////////////////////////////////////////////

@@ -160,7 +160,7 @@ class Socket_Handler
         //! \param size Size of the message, deprecated and will be removed.
         //! \return SOCK_STATUS representing if the operation succeeded or failed.
         ////////////////////////////////////////////////////////////////////////////////
-        virtual SOCK_STATUS sockReceive(std::string &buffer, int &size);
+        virtual SOCK_STATUS sockReceive(std::string &buffer);
         
         ////////////////////////////////////////////////////////////////////////////////
         //! \brief Wrapper around send socket function taking C++ string.
@@ -169,7 +169,7 @@ class Socket_Handler
         //! \param size Size of the meessage, deprecated and will be removed.
         //! \return SOCK_STATUS representing if the operation succeeded or failed.
         ////////////////////////////////////////////////////////////////////////////////
-        virtual SOCK_STATUS sockSend(std::string buffer, int &size);
+        virtual SOCK_STATUS sockSend(std::string buffer);
 
         ////////////////////////////////////////////////////////////////////////////////
         //! \brief Retreive address information.

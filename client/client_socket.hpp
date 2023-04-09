@@ -29,7 +29,7 @@ class Client_Socket: public Socket_Handler
         //! \param size Returns the size of the message sent, will be removed later.
         //! \return SOCK_STATUS representing if the operation succeeded or failed.
         ////////////////////////////////////////////////////////////////////////////////
-        SOCK_STATUS sockReceive(std::string &buffer, int &size);
+        SOCK_STATUS sockReceive(std::string &buffer);
 
         ////////////////////////////////////////////////////////////////////////////////
         //! \brief This function wraps the raw send socket function for easier error
@@ -39,7 +39,7 @@ class Client_Socket: public Socket_Handler
         //! \param size The size of the buffer, will be removed later.
         //! \return SOCK_STATUS representing if the operation succeeded or failed.
         ////////////////////////////////////////////////////////////////////////////////
-        SOCK_STATUS sockSend(std::string buffer, int &size);
+        SOCK_STATUS sockSend(std::string buffer);
 
         ////////////////////////////////////////////////////////////////////////////////
         //! \brief This function encapsulates the address aquisition and error handling

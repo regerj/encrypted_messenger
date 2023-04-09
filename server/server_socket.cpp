@@ -96,22 +96,22 @@ SOCK_STATUS Server_Socket::sockAccept()
 SOCK_STATUS Server_Socket::echo()
 {
     SOCK_STATUS status = SOCK_GENERAL_FAIL;
-    int numBytesReceived = 0;
     std::string receiveBuffer;
     
     while(true)
     {
-        status = sockReceive(receiveBuffer, numBytesReceived);
+        status = sockReceive(receiveBuffer);
         if(status != SOCK_SUCCESS) break;
 
-        status = sockSend(receiveBuffer, numBytesReceived);
+        status = sockSend(receiveBuffer);
         if(status != SOCK_SUCCESS) break;
     }
     return status;
 }
 
-SOCK_STATUS Server_Socket::sockReceive(std::string &buffer, int &size)
+SOCK_STATUS Server_Socket::sockReceive(std::string &buffer)
 {
+    int size = 0;
     char cStringBuffer[BUFFER_LEN];
 
     size = recv(clientHandle, cStringBuffer, BUFFER_LEN, 0);
@@ -134,10 +134,10 @@ SOCK_STATUS Server_Socket::sockReceive(std::string &buffer, int &size)
     return SOCK_SUCCESS;
 }
 
-SOCK_STATUS Server_Socket::sockSend(std::string buffer, int &size)
+SOCK_STATUS Server_Socket::sockSend(std::string buffer)
 {
     const char * cStringBuffer = buffer.c_str();
-    int status = send(clientHandle, cStringBuffer, size, 0);
+    int status = send(clientHandle, cStringBuffer, buffer.length(), 0);
     if(status == SOCKET_ERROR)
     {
         log(LOG_ERROR, "Failed to send.");
