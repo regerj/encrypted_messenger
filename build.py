@@ -56,14 +56,18 @@ def main():
 
 def build():
     global exe_name
+    global file_list
     if compileClient:
+        file_list = ""
         exe_name = "client.exe"
+        os.chdir(".\\client")
         os.mkdir(".\\bin")
         compile("client_socket", True)
         compile("main", True)
         compile("", False)
         os.chdir("..\\")
     if compileServer:
+        file_list = ""
         exe_name = "server.exe"
         os.chdir(".\\server")
         os.mkdir(".\\bin")
