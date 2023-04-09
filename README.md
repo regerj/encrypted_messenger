@@ -1,2 +1,2 @@
-# encrypted_messenger
+# Lovelace
 Encrypted messenger
