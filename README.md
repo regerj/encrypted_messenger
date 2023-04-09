@@ -1,2 +1,2 @@
 # encrypted_messenger
-Encrypted intranet messenger
+Encrypted messenger
