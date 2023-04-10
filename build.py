@@ -82,11 +82,11 @@ def compile(cpp_file, component):
 
     if component:
         os.system("echo Compiling " + cpp_file)
-        os.system("g++ -std=c++11 -c -g " + cpp_file + ".cpp" + " -o " + ".\\bin\\" + cpp_file + ".o")
+        os.system("g++ -std=c++11 -c -g " + cpp_file + ".cpp" + " -o " + ".\\bin\\" + cpp_file + ".o" + " -D_WIN32_WINNT=0x0A00")
         file_list += (".\\bin\\" + cpp_file + ".o ")
     else:
         #print(file_list)
-        os.system("g++ -std=c++11 -g " + file_list + "-o " + ".\\bin\\" + exe_name + " -L .\\lib -lsocket_handler" + " -lws2_32")
+        os.system("g++ -std=c++11 -g " + file_list + "-o " + ".\\bin\\" + exe_name + " -L .\\lib -lsocket_handler" + " -lws2_32" + " -D_WIN32_WINNT=0x0A00")
 
 def gen_doc():
     os.system("doxygen .\\docs\\lovelace.doxygen")

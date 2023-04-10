@@ -4,14 +4,14 @@ Server_Socket::Server_Socket()
 {
     SOCK_STATUS status = SOCK_GENERAL_FAIL;
     status = initAddr();
-    if(status != SOCK_SUCCESS)
+    if (status != SOCK_SUCCESS)
     {
         WSACleanup();
         throw std::runtime_error("Failed to init address.");
     }
 
     status = initAndBindSocket();
-    if(status != SOCK_SUCCESS)
+    if (status != SOCK_SUCCESS)
     {
         WSACleanup();
         freeaddrinfo(address);
@@ -28,7 +28,7 @@ SOCK_STATUS Server_Socket::initAndBindSocket()
 {
     socketHandle = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
 
-    if(socketHandle == INVALID_SOCKET)
+    if (socketHandle == INVALID_SOCKET)
     {
         log(LOG_ERROR, "Failed to create socket.");
         return SOCK_GENERAL_FAIL;
@@ -37,7 +37,7 @@ SOCK_STATUS Server_Socket::initAndBindSocket()
 
     int status = bind(socketHandle, address->ai_addr, address->ai_addrlen);
 
-    if(status == SOCKET_ERROR)
+    if (status == SOCKET_ERROR)
     {
         log(LOG_ERROR, "Failed to bind socket.");
         closesocket(socketHandle);
@@ -55,9 +55,9 @@ SOCK_STATUS Server_Socket::initAddr()
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
     hints.ai_flags = AI_PASSIVE;
-    
+
     int status = getaddrinfo(NULL, DEFUALT_PORT, &hints, &address);
-    if(status)
+    if (status)
     {
         log(LOG_ERROR, "Failed to get address info.");
         log(LOG_ERROR, std::to_string(status));
@@ -72,7 +72,7 @@ SOCK_STATUS Server_Socket::sockListen()
     int status;
     status = listen(socketHandle, SOMAXCONN);
 
-    if(status == SOCKET_ERROR)
+    if (status == SOCKET_ERROR)
     {
         log(LOG_ERROR, "Failed to listen to socket.");
         return SOCK_GENERAL_FAIL;
@@ -84,7 +84,7 @@ SOCK_STATUS Server_Socket::sockAccept()
 {
     clientHandle = accept(socketHandle, NULL, NULL);
 
-    if(clientHandle == INVALID_SOCKET)
+    if (clientHandle == INVALID_SOCKET)
     {
         log(LOG_ERROR, "Failed to accept connection.");
         return SOCK_GENERAL_FAIL;
@@ -97,32 +97,32 @@ SOCK_STATUS Server_Socket::echo()
 {
     SOCK_STATUS status = SOCK_GENERAL_FAIL;
     std::string receiveBuffer;
-    
-    while(true)
+
+    while (true)
     {
         status = sockReceive(receiveBuffer);
-        if(status != SOCK_SUCCESS) break;
+        if (status != SOCK_SUCCESS) break;
 
         status = sockSend(receiveBuffer);
-        if(status != SOCK_SUCCESS) break;
+        if (status != SOCK_SUCCESS) break;
     }
     return status;
 }
 
-SOCK_STATUS Server_Socket::sockReceive(std::string &buffer)
+SOCK_STATUS Server_Socket::sockReceive(std::string& buffer)
 {
     int size = 0;
     char cStringBuffer[BUFFER_LEN];
 
     size = recv(clientHandle, cStringBuffer, BUFFER_LEN, 0);
 
-    if(size == 0)
+    if (size == 0)
     {
         log(LOG_WARNING, "Connection closed.");
         return SOCK_CONNECTION_CLOSED;
     }
 
-    if(size < 0)
+    if (size < 0)
     {
         log(LOG_ERROR, "Failed to receive.");
         return SOCK_GENERAL_FAIL;
@@ -136,9 +136,9 @@ SOCK_STATUS Server_Socket::sockReceive(std::string &buffer)
 
 SOCK_STATUS Server_Socket::sockSend(std::string buffer)
 {
-    const char * cStringBuffer = buffer.c_str();
+    const char* cStringBuffer = buffer.c_str();
     int status = send(clientHandle, cStringBuffer, buffer.length(), 0);
-    if(status == SOCKET_ERROR)
+    if (status == SOCKET_ERROR)
     {
         log(LOG_ERROR, "Failed to send.");
         return SOCK_GENERAL_FAIL;

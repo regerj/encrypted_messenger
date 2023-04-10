@@ -8,3 +8,6 @@ docs/latex/
 docs/html/
 client/docs/
 server/docs/
+.vs/
+x64/
+Debug/
